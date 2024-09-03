@@ -1,0 +1,29 @@
+using System;
+
+public class Program
+{
+    public static void Main(string[] args)
+    {
+        string value1 = "123";          // Integer
+        string value2 = "123.45";       // Decimal
+        string value3 = "123.45.67";    // Invalid
+        string value4 = "Hello123";     // Invalid
+
+        Console.WriteLine($"Is '{value1}' an integer or decimal? {IsIntegerOrDecimal(value1)}");
+        Console.WriteLine($"Is '{value2}' an integer or decimal? {IsIntegerOrDecimal(value2)}");
+        Console.WriteLine($"Is '{value3}' an integer or decimal? {IsIntegerOrDecimal(value3)}");
+        Console.WriteLine($"Is '{value4}' an integer or decimal? {IsIntegerOrDecimal(value4)}");
+    }
+
+    public static bool IsIntegerOrDecimal(string value)
+    {
+        // Check if the value can be parsed as an integer
+        bool isInteger = int.TryParse(value, out _);
+
+        // Check if the value can be parsed as a decimal
+        bool isDecimal = decimal.TryParse(value, out _);
+
+        // If it's either an integer or a decimal, return true
+        return isInteger || isDecimal;
+    }
+}
