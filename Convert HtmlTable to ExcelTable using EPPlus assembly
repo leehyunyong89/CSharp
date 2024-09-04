@@ -1,0 +1,71 @@
+using System;
+using System.Data;
+using System.Web;
+using System.Web.UI;
+using System.Web.UI.HtmlControls;
+using OfficeOpenXml; // 해당 dll 파일 bin 폴더에 추가했음.
+using OfficeOpenXml.Style; // Namespace for ExcelBorderStyle
+
+public partial class PerformanceIndicatorExcelForm : Page
+{
+    protected void Page_Load(object sender, EventArgs e)
+    {
+        
+    }
+      
+
+    protected void GenerateExcelFile()
+    {    // Initialize a new Excel package
+        using (ExcelPackage pck = new ExcelPackage())
+        {
+            // Create a new worksheet in the Excel file
+            ExcelWorksheet ws = pck.Workbook.Worksheets.Add("HtmlTableData");
+
+            // Assuming your HtmlTable ID is "list1"
+            HtmlTable htmlTable = (HtmlTable)FindControl("list1");
+            if (htmlTable != null)
+            {
+                int rowIndex = 1; // Excel rows start at 1
+
+                // Loop through each row in the HtmlTable
+                foreach (HtmlTableRow row in htmlTable.Rows)
+                {
+                    int colIndex = 1; // Excel columns start at 1
+
+                    // Loop through each cell in the row
+                    foreach (HtmlTableCell cell in row.Cells)
+                    {
+                        var excelCell = ws.Cells[rowIndex, colIndex];
+                        excelCell.Value = cell.InnerText;
+
+                        // Apply border to each cell
+                        var border = excelCell.Style.Border;
+                        border.Top.Style = ExcelBorderStyle.Thin;
+                        border.Bottom.Style = ExcelBorderStyle.Thin;
+                        border.Left.Style = ExcelBorderStyle.Thin;
+                        border.Right.Style = ExcelBorderStyle.Thin;
+
+                        colIndex++; // Move to the next column in Excel
+                    }
+
+                    rowIndex++; // Move to the next row in Excel
+                }
+
+                // Convert the Excel package to a byte array
+                byte[] bin = pck.GetAsByteArray();
+
+                // Clear the response, set content type and add header
+                Response.Clear();
+                Response.ContentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+                Response.AddHeader("content-disposition", "attachment; filename=GeneratedFromHtmlTable.xlsx");
+
+                // Write the byte array to the response
+                Response.OutputStream.Write(bin, 0, bin.Length);
+                Response.Flush();
+                Response.End();
+            }
+        }
+    }
+
+
+}
