@@ -1,0 +1,43 @@
+The CodeBehind and CodeFile attributes are both used in ASP.NET to link the .aspx markup file to its associated C# or VB.NET code file, but they are used in different types of ASP.NET projects and have slightly different purposes:
+
+1. CodeBehind Attribute:
+Used in Web Application Projects.
+CodeBehind is a design-time attribute that tells Visual Studio where to find the associated code file for the .aspx page during development.
+It is mainly for use within the Visual Studio environment and is not required or used by the ASP.NET runtime after the code is compiled into the assembly (DLL).
+Key Point: Once compiled, the .aspx file and the code-behind file are bundled into the same DLL.
+
+
+//example
+<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="PerformanceIndicatorExcelForm.aspx.cs" Inherits="YourNamespace.PerformanceIndicatorExcelForm" %>
+
+Here, the C# code for the page is in PerformanceIndicatorExcelForm.aspx.cs, and the compiled DLL will contain both the .aspx logic and the code-behind.
+
+
+2. CodeFile Attribute:
+Used in Web Site Projects.
+CodeFile is used in Web Site projects, where the code is dynamically compiled at runtime, rather than pre-compiled into a DLL like in Web Application projects.
+This attribute specifies the physical location of the code-behind file, which ASP.NET uses at runtime to dynamically compile the .aspx and .cs files.
+The source code and markup files are compiled at runtime in Web Site projects, and the output is stored in a temporary folder.
+
+//example
+<%@ Page Language="C#" AutoEventWireup="true" CodeFile="PerformanceIndicatorExcelForm.aspx.cs" Inherits="YourNamespace.PerformanceIndicatorExcelForm" %>
+
+Here, CodeFile directly points to the .cs file and is compiled when the page is requested for the first time.
+
+
+<Key Differences>
+Project Type:
+CodeBehind is used in Web Application Projects (compiled before deployment).
+CodeFile is used in Web Site Projects (dynamically compiled at runtime).
+
+Compilation Time:
+In a Web Application, both .aspx and .aspx.cs files are pre-compiled into a DLL when the project is built.
+In a Web Site, the files are compiled dynamically when they are first requested.
+
+Development Experience:
+CodeBehind is primarily for design-time and used by Visual Studio. Once compiled, this link is no longer needed.
+CodeFile is required at runtime because the code is compiled when requested by the server.
+
+<When to Use Which>
+If you are working in a Web Application Project, use CodeBehind.
+If you are working in a Web Site Project, use CodeFile.
