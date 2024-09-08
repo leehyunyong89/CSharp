@@ -1,0 +1,74 @@
+using System;
+using System.IO;
+using System.Web;
+using System.Web.UI;
+using System.Web.UI.HtmlControls;
+
+public partial class PerformanceIndicatorExcelForm : Page
+{
+    protected void Page_Load(object sender, EventArgs e)
+    {
+    }
+
+    protected void ExportToExcel_Click(object sender, EventArgs e)
+    {
+        // Clear the response
+        Response.Clear();
+        Response.Buffer = true;
+        Response.Charset = "";
+
+        // Set response headers for Excel file download
+        Response.AddHeader("content-disposition", "attachment;filename=HtmlTableData.xml");
+        Response.ContentType = "application/vnd.ms-excel";
+        Response.ContentEncoding = System.Text.Encoding.UTF8;
+
+        // Generate XML Spreadsheet content
+        using (StringWriter sw = new StringWriter())
+        {
+            // Write the XML header for Excel
+            sw.WriteLine("<?xml version=\"1.0\"?>");
+            sw.WriteLine("<?mso-application progid=\"Excel.Sheet\"?>");
+            sw.WriteLine("<Workbook xmlns=\"urn:schemas-microsoft-com:office:spreadsheet\"");
+            sw.WriteLine(" xmlns:o=\"urn:schemas-microsoft-com:office:office\"");
+            sw.WriteLine(" xmlns:x=\"urn:schemas-microsoft-com:office:excel\"");
+            sw.WriteLine(" xmlns:ss=\"urn:schemas-microsoft-com:office:spreadsheet\"");
+            sw.WriteLine(" xmlns:html=\"http://www.w3.org/TR/REC-html40\">");
+            sw.WriteLine("<Worksheet ss:Name=\"Sheet1\">");
+            sw.WriteLine("<Table>");
+
+            // Convert HtmlTable to SpreadsheetML rows
+            ConvertHtmlTableToXml(list1, sw);
+
+            // End the XML document
+            sw.WriteLine("</Table>");
+            sw.WriteLine("</Worksheet>");
+            sw.WriteLine("</Workbook>");
+
+            // Write the content to the response
+            Response.Output.Write(sw.ToString());
+        }
+
+        // Flush and end the response
+        Response.Flush();
+        Response.End();
+    }
+
+    private void ConvertHtmlTableToXml(HtmlTable table, StringWriter sw)
+    {
+        foreach (HtmlTableRow row in table.Rows)
+        {
+            sw.WriteLine("<Row>");
+            foreach (HtmlTableCell cell in row.Cells)
+            {
+                // Using String.Format to write the XML structure
+                sw.WriteLine(String.Format("<Cell><Data ss:Type=\"String\">{0}</Data></Cell>", HttpUtility.HtmlEncode(cell.InnerText)));
+            }
+            sw.WriteLine("</Row>");
+        }
+    }
+
+    public override void VerifyRenderingInServerForm(Control control)
+    {
+        // Required to prevent runtime error when rendering HtmlControls in code
+    }
+}
