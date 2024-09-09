@@ -1,0 +1,61 @@
+//자바스크립트에서 동적으로 사용할 수 있는 web method
+
+
+//jasascript code
+   function EditReport(key) {
+       
+       //경민대 $54701 만족도 필수로 실시했는지 확인하는 유효성 추가.
+         $.ajax({
+           type: "POST",
+           url: "MyAspxCode.aspx/WebMethodName",
+           data: JSON.stringify({ encKey: key }),
+           contentType: "application/json; charset=utf-8",
+           dataType: "json",
+           success: function (response) {
+               if (response.d) {
+                   //유효성 통과했을 경우
+               } else {
+                   //유효성 통과 못했을 경우
+                   return false;
+               }
+           },
+           error: function (xhr, status, error) {
+               console.log("Error: " + error);
+           }
+       });       
+   }
+
+
+//MyAspxCode.aspx 파일 안에 작성한 web method 시작 ***************
+
+<%@ Import Namespace="System.Web.Services" %>
+<%@ Import Namespace="System.Data.SqlClient" %>
+
+[WebMethod]
+public static bool WebMethodName(string encKey)
+{
+    bool exists = false;
+    string encryptedKey = enKey;
+
+    //db 연결해서 테이블에서 데이터 조회하는 코드 작성
+    // ...    
+
+    int res = //db 에서 조회한 결과값 리턴 받기.
+    exists = res > 0;        
+
+    return exists;
+}
+
+//MyAspxCode.aspx 파일 안에 작성한 web method 끝 ***************
+
+
+//이렇게 하면 하나의 aspx파일 안에서 서버단에 있는 함수를 비동기적으로 호출해서 사용할 수 있다. 유효성 확인을 위한 별도의 소스를 따로 만들지 않아도 된다는 뜻.
+
+
+
+
+
+
+
+
+
