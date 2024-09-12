@@ -1,0 +1,55 @@
+.ascx File (User Control):
+* .ascx files represent ASP.NET User Controls. These files are similar to .aspx files but are meant to be used as reusable components (controls) on different ASP.NET Web Forms pages.
+* User controls allow you to encapsulate a part of the user interface (UI) with its logic in a separate file, which can then be embedded into ASP.NET Web Forms.
+* Example: A login form, navigation bar, or a custom data display table could be created as an .ascx user control and reused on multiple pages.
+* File Structure: The .ascx file contains HTML markup and ASP.NET server controls, similar to .aspx files, but doesn't have <html>, <body>, and <form> tags. It is designed to be included within a parent page.
+
+When it's used:
+* When you want to reuse UI components across multiple pages.
+* To encapsulate UI and associated logic for a specific functionality (e.g., a login box, search form, or custom display).
+
+//////////Example of an .ascx file////////////////////      
+<%@ Control Language="C#" AutoEventWireup="true" CodeFile="MyUserControl.ascx.cs" Inherits="MyUserControl" %>
+
+<asp:Label ID="lblMessage" runat="server" Text="Welcome!"></asp:Label>
+<asp:TextBox ID="txtInput" runat="server"></asp:TextBox>
+<asp:Button ID="btnSubmit" runat="server" Text="Submit" />
+/////////////////////////////////////////////////////
+
+
+
+.cs File (C# Code):
+* .cs files are C# class files and contain the back-end logic or code. They are typically used for coding the business logic, event handling, or functionality of the application.
+* Example: Classes, methods, and event handlers written in C# are placed in .cs files, which could be used to handle interactions from the UI components defined in .aspx or .ascx files.
+* These files do not include any UI components and are purely code-based.
+
+When it's used:
+* To write application logic, algorithms, or event handling code for user controls, web pages, or custom classes.
+* When you need to define custom business logic, operations, or functionalities that aren’t tied directly to the user interface.
+
+//////////Example of an .cs file////////////////////      
+using System;
+
+public class MyCustomClass
+{
+    public string SayHello(string name)
+    {
+        return "Hello, " + name;
+    }
+}
+/////////////////////////////////////////////////////
+
+
+
+Use Cases for Each:
+* .ascx: You use this file when you want to define a reusable UI control. It typically contains both UI components (such as buttons, textboxes) and can call back-end logic via events or code-behind files (like .ascx.cs).
+  * Example: A shopping cart or product listing control that can be used on different pages.
+* .cs: You use this file to implement the back-end logic, including event handling, data processing, and communication with databases or APIs. A .cs file is responsible for processing user input, handling events, or creating classes to handle data structures or business logic.
+  * Example: The logic for adding an item to the cart or retrieving products from a database.
+
+
+
+Conclusion :
+In an ASP.NET Web Forms application, the .ascx file provides the UI, while the .cs file provides the logic or code behind that UI. Both files work together to create a cohesive application.
+
+
