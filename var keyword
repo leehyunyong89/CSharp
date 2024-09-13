@@ -1,0 +1,71 @@
+The var keyword in C# is used for implicitly typed local variables, which means that the compiler determines the type of the variable based on the expression on the right-hand side at compile time. 
+It's particularly useful when the type is obvious or long to write. However, the type is still strongly typed once the compiler infers it, and it's not dynamic.
+
+When to Use var in C#:
+
+01. When the type is obvious from the right-hand side of the assignment:
+
+** csharp code ** 
+var x = 10; // The compiler infers that 'x' is of type int.
+var message = "Hello, World"; // 'message' is inferred as string.
+
+
+02. When working with complex or long type names:
+
+** csharp code ** 
+Dictionary<string, List<int>> myDictionary = new Dictionary<string, List<int>>();
+// Using var simplifies this:
+var myDictionary = new Dictionary<string, List<int>>();
+
+
+03. When working with LINQ queries: LINQ (Language Integrated Query) often returns anonymous types or complex types, so using var simplifies the code.
+
+** csharp code ** 
+var query = from person in people
+            where person.Age > 30
+            select new { person.Name, person.Age };
+// 'query' here is an anonymous type.
+
+
+
+Important Points:
+- Type Safety: The variable is still statically typed, meaning the type is known at compile-time, and you cannot change it later.
+- Cannot be Null: The right-hand side of the assignment must provide a value so the compiler can infer the type. You can't assign null without specifying the type explicitly:
+** csharp code ** 
+var x = null; // Error: Cannot assign null to an implicitly-typed variable.
+- Cannot Be Used as a Field Type: var can only be used with local variables, in loops, or for lambda expressions. It cannot be used for class fields or method parameters.
+
+
+Example of var Usage:
+** csharp code ** 
+public void Example()
+{
+    var number = 5;         // The compiler infers the type 'int'.
+    var name = "John Doe";  // The compiler infers the type 'string'.
+
+    // Inferred type is List<string>
+    var namesList = new List<string> { "Alice", "Bob", "Charlie" };
+
+    foreach (var name in namesList)
+    {
+        Console.WriteLine(name); // var is used in a foreach loop.
+    }
+}
+
+
+
+In summary, 
+var is used when you want to let the compiler infer the type of a local variable based on the assignment expression, making the code shorter and sometimes more readable. 
+However, overuse of var can reduce code clarity if the type isn't obvious.
+
+
+
+
+
+
+
+
+
+
+
+
