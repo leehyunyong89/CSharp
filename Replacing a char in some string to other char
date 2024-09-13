@@ -1,0 +1,42 @@
+using System;
+using System.Collections.Generic;
+using System.Text.RegularExpressions;
+
+class Program
+{
+    static void Main()
+    {
+        // The calculator expression
+        string calculator = "(A/B)*100";
+
+        // The CalVal table, represented as a dictionary
+        var calValTable = new Dictionary<string, string>
+        {
+            { "A", null },   // A has a null value, so it should not be replaced
+            { "B", "(B1-(B2+B3+B4+B5+B6+B7))" }   // B has a value, so it should be replaced
+        };
+
+        // Iterate through the calculator string and replace the chars with values from the CalVal table
+        string updatedCalculator = ReplaceWithCalVal(calculator, calValTable);
+
+        // Output the updated calculator string
+        Console.WriteLine("Updated Expression: " + updatedCalculator);
+    }
+
+    static string ReplaceWithCalVal(string calculator, Dictionary<string, string> calValTable)
+    {
+        // Use a regex to match each variable (like A, B) in the calculator string
+        return Regex.Replace(calculator, @"[A-Za-z]+", match =>
+        {
+            string variable = match.Value;
+            // Check if the variable exists in the table and if its calVal is not null
+            if (calValTable.ContainsKey(variable) && calValTable[variable] != null)
+            {
+                // Replace the variable with its corresponding calVal
+                return calValTable[variable];
+            }
+            // If no replacement is needed, return the original variable
+            return variable;
+        });
+    }
+}
