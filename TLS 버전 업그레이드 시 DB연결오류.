@@ -1,0 +1,76 @@
+<My environment>
+- I enabled the TLS version 1.2 and 1.3.
+- I disabled older TLS version 1.0 and 1.1.
+- then, my c# web application encountered below
+
+System.Data.OleDb.OleDbException: [DBNETLIB][ConnectionOpen (SECDoClientHandshake()).]SSL 보안 오류입니다. 잘못된 연결 문자열 특성입니다
+
+
+<Solution>
+
+The error you're encountering, specifically `System.Data.OleDb.OleDbException: [DBNETLIB][ConnectionOpen (SECDoClientHandshake()).]SSL 보안 오류입니다. 잘못된 연결 문자열 특성입니다`, 
+typically occurs when a connection attempt is made to a database using an outdated security protocol, which conflicts with the newly enforced TLS versions (TLS 1.2 or TLS 1.3).
+
+This issue often happens when an older **SQL Server Native Client** (or OLE DB provider) is used that doesn’t support the newer TLS versions. The following steps can help resolve the issue:
+
+### 1. Update the OLE DB Provider or SQL Server Native Client
+
+If you're using an outdated OLE DB provider (such as **SQL Server Native Client 10.0** or earlier), it might not support TLS 1.2. Updating to a newer version that supports TLS 1.2 and TLS 1.3 should resolve the issue.
+
+- Download the latest **SQL Server Native Client** or **Microsoft OLE DB Driver for SQL Server**:
+  - [Microsoft OLE DB Driver for SQL Server](https://docs.microsoft.com/en-us/sql/connect/oledb/download-oledb-driver-for-sql-server) (recommended)
+  - [SQL Server Native Client](https://www.microsoft.com/en-us/download/details.aspx?id=50402) (if you're specifically using this)
+
+### 2. Modify the Connection String (if necessary)
+
+Ensure that your connection string explicitly supports newer encryption protocols and doesn't use any deprecated settings.
+
+Example connection string using **Microsoft OLE DB Driver for SQL Server**:
+```csharp
+"Provider=MSOLEDBSQL;Server=your_server;Database=your_database;Integrated Security=SSPI;Encrypt=true;TrustServerCertificate=false;"
+```
+
+In this example:
+- **MSOLEDBSQL** is the updated OLE DB provider that supports TLS 1.2 and TLS 1.3.
+- **Encrypt=true** ensures that the connection is encrypted using TLS.
+- **TrustServerCertificate=false** ensures that the server's certificate is validated.
+
+If you're using an older provider or connection string format, switching to a newer one might be necessary to ensure compatibility with TLS 1.2+.
+
+### 3. Update .NET Framework Version
+
+If your application is targeting an older version of the .NET Framework (before .NET 4.6), it may not default to using TLS 1.2. You can enforce TLS 1.2 in your application’s code by explicitly specifying the security protocol.
+
+Add the following line at the startup of your application (e.g., in `Global.asax.cs` or wherever initialization occurs):
+```csharp
+System.Net.ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12 | SecurityProtocolType.Tls13;
+```
+
+This ensures that the application uses TLS 1.2 or TLS 1.3 when making network requests.
+
+### 4. Ensure SQL Server Supports TLS 1.2/1.3
+
+Check that your **SQL Server** version supports TLS 1.2 or 1.3. Older SQL Server versions may require updates or patches to support these protocols.
+
+- For **SQL Server 2008 R2** and later, patches are available to support TLS 1.2. You can find these patches on the [Microsoft Support website](https://support.microsoft.com/).
+- For **SQL Server 2016** and later, TLS 1.2 is supported by default.
+
+### 5. Verify Server Certificates (if applicable)
+
+If you’re using a secure connection and `Encrypt=true` in the connection string, verify that the SQL Server has a valid and trusted SSL certificate installed. If the server certificate is self-signed or not trusted, either:
+
+- Set `TrustServerCertificate=true` (although this weakens security), or
+- Install a valid SSL certificate on the SQL Server.
+
+### 6. Test Database Connection
+
+Once you've updated the drivers and ensured that your connection string and .NET application are configured for TLS 1.2, test your application and ensure that the database connection works without any SSL handshake issues.
+
+### Summary of Actions:
+1. **Update OLE DB Provider/SQL Server Native Client** to a version that supports TLS 1.2 or higher.
+2. **Modify your connection string** to use the updated provider (`MSOLEDBSQL`).
+3. **Enforce TLS 1.2/1.3** in your application’s code (if using .NET Framework older than 4.6).
+4. **Verify that SQL Server** supports TLS 1.2 or TLS 1.3 (apply patches if necessary).
+5. **Ensure that the SQL Server has a valid SSL certificate** if encryption is enabled.
+
+These steps should help you resolve the `SSL 보안 오류` and allow your web application to successfully connect to the database over TLS 1.2 or 1.3. Let me know if you need further assistance!
