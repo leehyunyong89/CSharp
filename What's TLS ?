@@ -1,0 +1,57 @@
+TLS (Transport Layer Security) is a cryptographic protocol designed to provide secure communication over a computer network. 
+It is widely used to protect the privacy and integrity of data transmitted between two communicating applications, such as a web browser and a web server. 
+TLS ensures that sensitive information such as passwords, credit card numbers, and other data are transmitted securely over the internet.
+
+Key Features of TLS:
+* Encryption: TLS encrypts the data transmitted between a client and a server to prevent unauthorized parties from reading it.
+* Integrity: TLS uses cryptographic hashing techniques to ensure that the data is not tampered with during transmission.
+* Authentication: TLS uses certificates (often issued by trusted certificate authorities, or CAs) to authenticate the identity of the communicating parties, ensuring that the server (and sometimes the client) is who it claims to be.
+* Confidentiality: By encrypting the communication, TLS ensures that only the intended recipient can read the transmitted data.
+
+How TLS Works:
+TLS works by establishing a secure connection between a client (like a browser) and a server (like a web server). 
+Here’s an overview of the steps involved in the process:
+1.TLS Handshake:
+* The client and server exchange "hello" messages to initiate the connection.
+* The server presents its TLS certificate to prove its identity.
+* The client validates the server’s certificate using a trusted certificate authority (CA).
+
+2.Session Key Generation:
+* After verifying the certificate, both the client and server generate a shared session key using asymmetric encryption (typically using RSA or Diffie-Hellman).
+* The session key is used to encrypt the communication for the rest of the session.
+
+3.Secure Communication:
+* Once the session key is established, all data exchanged between the client and server is encrypted using symmetric encryption algorithms (like AES).
+* Both parties use this session key to ensure data confidentiality and integrity.
+
+4.Session Closure:
+* After the communication ends, the connection is closed, and the session key is discarded.
+
+Versions of TLS:
+TLS has gone through several versions to improve security:
+
+* TLS 1.0: Introduced as a successor to SSL (Secure Sockets Layer) in 1999.
+* TLS 1.1: Released in 2006 with improvements in security.
+* TLS 1.2: Introduced in 2008 and is widely used today, providing strong encryption and security features.
+* TLS 1.3: Released in 2018, offering faster handshake times and enhanced security features by removing outdated algorithms.
+
+
+Difference Between TLS and SSL:
+TLS is the successor to SSL (Secure Sockets Layer), an older protocol. SSL 3.0 was replaced by TLS 1.0 due to security vulnerabilities. 
+Although people often refer to "SSL" (e.g., "SSL certificates"), modern secure connections actually use TLS.
+
+Common Use Cases of TLS:
+* HTTPS (HTTP Secure): TLS is used to secure web traffic over HTTPS, ensuring secure connections between web browsers and servers.
+* Email Security: TLS is used to encrypt email communications in protocols like SMTPS, POP3S, and IMAPS.
+* VPNs: Some virtual private networks (VPNs) use TLS to secure communications between users and private networks.
+
+In summary, TLS is a critical technology for securing online communications, ensuring data confidentiality, integrity, and authenticity during transmission.
+
+
+
+
+
+
+
+
+
