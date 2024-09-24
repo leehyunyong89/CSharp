@@ -1,0 +1,97 @@
+
+
+**csharp code**
+using System.Web.Services;
+
+public partial class YourPage : System.Web.UI.Page
+{
+    [WebMethod]
+    public static string YourMethodName(string param)
+    {
+        // Your logic here
+        return "Hello from the server! You sent: " + param;
+    }
+}
+
+
+
+
+**javascript code**
+<script type="text/javascript">
+    function callServerMethod() {
+        // Create a data object to send to the server
+        let data = {
+            param: "Hello from JavaScript"
+        };
+
+        // Use fetch to make the AJAX request
+        fetch('YourPage.aspx/YourMethodName', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data) // Send data as JSON
+        })
+        .then(response => response.json()) // Parse the JSON response
+        .then(data => {
+            alert('Response from server: ' + data.d); // Handle the response from the server
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
+    }
+</script>
+
+
+
+************** 만약 파라미터를 두 개 보내고 싶은 경우 ************** 
+
+**csharp code**
+using System.Web.Services;
+
+public partial class YourPage : System.Web.UI.Page
+{
+    [WebMethod]
+    public static int YourMethodName(int param1, string param2)
+    {
+        // Process the parameters here
+        int result = param1 * 2;  // Just an example of logic using param1
+
+        // You can also use param2 here
+        return result;  // Returning the result back to the client-side
+    }
+}
+
+
+
+**javascript code**
+<script type="text/javascript">
+    function callServerMethod() {
+        // Parameters to pass to the server
+        let param1 = 42; // Example integer
+        let param2 = "example"; // Example string
+
+        // Use fetch to make the AJAX request
+        fetch('YourPage.aspx/YourMethodName', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ param1: param1, param2: param2 }) // Sending the parameters as JSON
+        })
+        .then(response => response.json()) // Parse the JSON response
+        .then(data => {
+            // Handle the integer response from the server
+            alert('Response from server: ' + data.d); // `data.d` contains the server's response
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
+    }
+</script>
+
+
+
+
+
+
