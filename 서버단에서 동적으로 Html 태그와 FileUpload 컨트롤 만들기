@@ -1,0 +1,48 @@
+
+
+
+** default.aspx **
+<asp:Placeholder ID="myPlaceholder" runat="server"></asp:Placeholder>
+
+
+** default.aspx.cs **
+
+int repeatNum = 5;
+public string[] insertDateArr_DB_data = //somedatas from DB
+
+for (int i = 0; i < repeatNum; i++)
+{
+    // Create outer div (form-group col-lg-12)
+    HtmlGenericControl outerDiv = new HtmlGenericControl("div");
+    outerDiv.Attributes.Add("class", "form-group col-lg-12");
+
+    // Create inner div for label (col-lg-3 lbr)
+    HtmlGenericControl labelDiv = new HtmlGenericControl("div");
+    labelDiv.Attributes.Add("class", "col-lg-3 lbr");
+    labelDiv.InnerText = insertDateArr_DB_data[i] + " 월 첨부자료";
+
+    // Create inner div for controls (col-lg-9 lbb)
+    HtmlGenericControl controlsDiv = new HtmlGenericControl("div");
+    controlsDiv.Attributes.Add("class", "col-lg-9 lbb");
+
+    // Dynamically create FileUpload control
+    FileUpload fileUpload = new FileUpload();
+    fileUpload.ID = "attachDoc_" + insertDateArr_DB_data[i];
+    fileUpload.Width = Unit.Percentage(50);
+
+    // Dynamically create Label control (or hn:span, based on your project)
+    Label span = new Label(); // Change this to hn:span if required
+    span.ID = "span_attachDoc_" + insertDateArr_DB_data[i];
+    span.Text = ""; // Set default or dynamic text if required
+
+    // Add the controls to the controls div
+    controlsDiv.Controls.Add(fileUpload);
+    controlsDiv.Controls.Add(span);
+
+    // Add both labelDiv and controlsDiv to the outer div
+    outerDiv.Controls.Add(labelDiv);
+    outerDiv.Controls.Add(controlsDiv);
+
+    // Add the outer div to the placeholder in the markup
+    myPlaceholder.Controls.Add(outerDiv);
+}
