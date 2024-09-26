@@ -30,7 +30,7 @@ for (int i = 0; i < repeatNum; i++)
     fileUpload.ID = "attachDoc_" + insertDateArr_DB_data[i];
     fileUpload.Width = Unit.Percentage(50);
 
-    // Dynamically create Label control (or hn:span, based on your project)
+    // Dynamically create Label control
     Label span = new Label(); // Change this to hn:span if required
     span.ID = "span_attachDoc_" + insertDateArr_DB_data[i];
     span.Text = ""; // Set default or dynamic text if required
