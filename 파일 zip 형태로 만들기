@@ -1,0 +1,112 @@
+protected void Page_Load(object sender, EventArgs e)
+{
+    if (IsPostBack)
+    {
+        string idxValues = Request["idxValues"]; // e.g., "1010,1011"
+        if (!string.IsNullOrEmpty(idxValues))
+        {
+            string[] idxArray = idxValues.Split(',');
+
+            // Prepare a dictionary to group files by idx and month
+            Dictionary<string, Dictionary<string, List<string>>> fileGroups = new Dictionary<string, Dictionary<string, List<string>>>();
+
+            foreach (string idx in idxArray)
+            {
+                string baseFolderPath = Server.MapPath($"~/Uploads/{idx}");
+
+                if (Directory.Exists(baseFolderPath))
+                {
+                    // Get all month folders inside each idx folder
+                    string[] monthFolders = Directory.GetDirectories(baseFolderPath);
+
+                    foreach (string monthFolder in monthFolders)
+                    {
+                        string monthFolderName = "month" + Path.GetFileName(monthFolder); // e.g., "month10", "month12"
+
+                        // Get files in this month folder
+                        string[] filesInMonth = Directory.GetFiles(monthFolder);
+
+                        if (!fileGroups.ContainsKey("idx" + idx))
+                        {
+                            fileGroups["idx" + idx] = new Dictionary<string, List<string>>();
+                        }
+
+                        fileGroups["idx" + idx][monthFolderName] = new List<string>(filesInMonth);
+                    }
+                }
+                else
+                {
+                    Response.Write($"Directory not found: {baseFolderPath}<br>");
+                }
+            }
+
+            // Compress the grouped files and allow download
+            if (fileGroups.Count > 0)
+            {
+                CompressAndDownloadFiles(fileGroups);
+            }
+            else
+            {
+                Response.Write("No files found for the given idx values.");
+            }
+        }
+    }
+}
+
+
+
+
+using System.IO.Compression;
+
+protected void CompressAndDownloadFiles(Dictionary<string, Dictionary<string, List<string>>> fileGroups)
+{
+    using (MemoryStream memoryStream = new MemoryStream())
+    {
+        // Create the zip archive in the memory stream
+        using (ZipArchive zip = new ZipArchive(memoryStream, ZipArchiveMode.Create, true))
+        {
+            foreach (var idxGroup in fileGroups)
+            {
+                string idxFolderName = idxGroup.Key; // e.g., "idx1010", "idx1011"
+
+                foreach (var monthGroup in idxGroup.Value)
+                {
+                    string monthFolderName = monthGroup.Key; // e.g., "month10", "month12"
+
+                    foreach (string filePath in monthGroup.Value)
+                    {
+                        string fileName = Path.GetFileName(filePath);
+
+                        // Check if the file exists before adding to the zip
+                        if (File.Exists(filePath))
+                        {
+                            // Create a folder for the idx and month group in the zip and add the file under it
+                            ZipArchiveEntry entry = zip.CreateEntry($"{idxFolderName}/{monthFolderName}/{fileName}");
+
+                            // Ensure the file is read and copied to the zip entry
+                            using (Stream entryStream = entry.Open())
+                            using (FileStream fileStream = new FileStream(filePath, FileMode.Open, FileAccess.Read))
+                            {
+                                fileStream.CopyTo(entryStream);
+                            }
+                        }
+                        else
+                        {
+                            // Log or output a message if a file does not exist
+                            Response.Write($"File not found: {filePath}<br>");
+                        }
+                    }
+                }
+            }
+        }
+
+        // Prepare the zip file for download
+        Response.Clear();
+        Response.ContentType = "application/zip";
+        Response.AddHeader("Content-Disposition", "attachment; filename=grouped_files.zip");
+        Response.OutputStream.Write(memoryStream.ToArray(), 0, memoryStream.ToArray().Length);
+        Response.Flush();
+        Response.End();
+    }
+}
+
